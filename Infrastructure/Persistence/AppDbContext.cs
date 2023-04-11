@@ -11,11 +11,8 @@ namespace Infrastructure.Persistence
         public DbSet<Mercaderia> MercaderiaDb { get; set; }
         public DbSet<ComandaMercaderia> ComandaMercaderiaDb { get; set; }
 
-        //CONECTION STRING
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(@"Server=localhost,1433;Database=TP2-REST-Scholz_Veronica;Trusted_Connection=True;TrustServerCertificate=True");
-        }
+        //CONSTRUCTOR
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         //MODELADO -> FluentApi
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,6 +23,7 @@ namespace Infrastructure.Persistence
                 entity.ToTable("TipoMercaderia");
                 entity.HasKey(tm => tm.TipoMercaderiaId);
                 entity.Property(tm => tm.Descripcion).HasColumnType("nvarchar(50)");
+                entity.Property(tm => tm.TipoMercaderiaId).ValueGeneratedOnAdd();
                 entity.HasData(new TipoMercaderia { TipoMercaderiaId = 1, Descripcion = "Entrada" });
                 entity.HasData(new TipoMercaderia { TipoMercaderiaId = 2, Descripcion = "Minutas" });
                 entity.HasData(new TipoMercaderia { TipoMercaderiaId = 3, Descripcion = "Pastas" });
@@ -47,6 +45,7 @@ namespace Infrastructure.Persistence
                 entity.ToTable("FormaEntrega");
                 entity.HasKey(fe => fe.FormaEntregaId);
                 entity.Property(fe => fe.Descripcion).HasColumnType("nvarchar(50)");
+                entity.Property(fe => fe.FormaEntregaId).ValueGeneratedOnAdd();
                 entity.HasData(new FormaEntrega { FormaEntregaId = 1, Descripcion = "Salon" });
                 entity.HasData(new FormaEntrega { FormaEntregaId = 2, Descripcion = "Delivery" });
                 entity.HasData(new FormaEntrega { FormaEntregaId = 3, Descripcion = "Pedidos Ya" });
@@ -64,6 +63,7 @@ namespace Infrastructure.Persistence
             entity.Property(m => m.Ingredientes).HasColumnType("nvarchar(255)");
             entity.Property(m => m.Preparacion).HasColumnType("nvarchar(255)");
             entity.Property(m => m.Imagen).HasColumnType("nvarchar(255)");
+            entity.Property(m => m.MercaderiaId).ValueGeneratedOnAdd();
 
                 entity.HasData(new Mercaderia
                 {
