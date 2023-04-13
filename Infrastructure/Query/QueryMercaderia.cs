@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.cqrs_Query
 {
@@ -35,9 +36,10 @@ namespace Infrastructure.cqrs_Query
             return list;
         }
 
-        public async Task<Mercaderia> GetMercaderiaById(int mercaderiaId)
+        public async Task<Mercaderia?> GetMercaderiaById(int mercaderiaId)
         {
-            var mercaderia = await Task.Run(() => _appDbContext.MercaderiaDb.FirstOrDefault(el => el.MercaderiaId == mercaderiaId));
+            var mercaderia = await Task.Run(() => _appDbContext.MercaderiaDb.Include(el => el.TipoMercaderia)
+                .FirstOrDefault(el => el.MercaderiaId == mercaderiaId));
             return mercaderia;
         }
     }

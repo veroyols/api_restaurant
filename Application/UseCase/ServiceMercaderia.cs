@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Schemas;
 using Domain.Entities;
 
 namespace Application.UseCase
@@ -28,10 +29,28 @@ namespace Application.UseCase
             var list = await _query.GetListMercaderiaByType(tipoMercaderiaId);
             return list;
         }
-        public async Task<string> GetMercaderiaById(int id)
+        public async Task<MercaderiaResponse?> GetMercaderiaById(int id)
         {
-            Mercaderia mercaderia = await _query.GetMercaderiaById(id);
-            return mercaderia.Nombre;
+            var mercaderia = await _query.GetMercaderiaById(id);
+            if(mercaderia != null)
+            {
+                TipoMercaderiaResponse tipo = new ()
+                {
+                    id = mercaderia.TipoMercaderiaId,
+                    descripcion = mercaderia.TipoMercaderia.Descripcion,
+                };
+                return new()
+                {
+                    id = mercaderia.MercaderiaId,
+                    nombre = mercaderia.Nombre,
+                    tipo = tipo,
+                    precio = mercaderia.Precio,
+                    ingredientes = mercaderia.Ingredientes,
+                    preparacion = mercaderia.Preparacion,
+                    imagen = mercaderia.Imagen
+                };
+            }
+            return null;
         }
 
         public async Task<int> GetPrice(int id)

@@ -14,11 +14,11 @@ namespace TP2_REST_Scholz_Veronica.Controllers
         {
             try
             {
-                return new JsonResult(new ComandaResponse()); //200
+                return new JsonResult(new ComandaResponse()) { StatusCode = 200 };  
             }
             catch
             {
-                return new JsonResult(new BadRequest { mensaje = "Bad Request" }); //400
+                return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
             }
         }
 
@@ -28,11 +28,11 @@ namespace TP2_REST_Scholz_Veronica.Controllers
         {
             try
             {
-                return new JsonResult(new ComandaResponse()); //201
+                return new JsonResult(new ComandaResponse()) { StatusCode = 201 };
             }
             catch
             {
-                return new JsonResult(new BadRequest { mensaje = "Bad Request" }); //400
+                return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
             }
         }
 
@@ -42,15 +42,15 @@ namespace TP2_REST_Scholz_Veronica.Controllers
         {
             try
             {
-                return new JsonResult(new ComandaGetResponse()); //201
+                return new JsonResult(new ComandaGetResponse()) { StatusCode = 201 };
             }
             //catch
             //{
-            //    return new JsonResult(new BadRequest { mensaje = "Not Found" }); //404
+            //    return new JsonResult(new BadRequest { mensaje = "Not Found" }) { StatusCode = 404 }; 
             //}
             catch
             {
-                return new JsonResult(new BadRequest { mensaje = "Bad Request"}); //400
+                return new JsonResult(new BadRequest { mensaje = "Bad Request"}) { StatusCode = 400 }; 
             }
         }
     }
