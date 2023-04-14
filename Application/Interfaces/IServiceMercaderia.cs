@@ -9,6 +9,7 @@ namespace Application.Interfaces
         public Task<List<Mercaderia>> GetAllMercaderias();
         public Task<List<Mercaderia>> GetMercaderiasByType(int tipoMercaderiaId);
         public Task<int> GetAmountByType(int tipoMercaderiaId);
-        public Task<int> GetPrice(int id); 
+        public Task<int> GetPrice(int id);
+        public Task<MercaderiaResponse> Create(MercaderiaRequest body);
     }
 }

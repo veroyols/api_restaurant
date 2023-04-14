@@ -32,11 +32,13 @@ namespace TP2_REST_Scholz_Veronica.Controllers
 
         //1. Debe permitir registrar la mercadería (platos, bebida o postre)
         [HttpPost]//OPTIONS
-        public IActionResult Create([FromBody] MercaderiaRequest body)
+        public async Task<IActionResult> Create([FromBody] MercaderiaRequest body)
         {
             try
             {
-                return new JsonResult(new MercaderiaResponse()) { StatusCode = 201 };
+                var result = await _serviceMercaderia.Create(body);
+
+                return new JsonResult(result) { StatusCode = 201 };
             }
             catch
             {
@@ -58,6 +60,7 @@ namespace TP2_REST_Scholz_Veronica.Controllers
                 if(result == null)
                 {
                     return new JsonResult(new BadRequest { mensaje = "Not Found" }) { StatusCode = 404 };
+                    //return NotFound();
                 }
                 else
                 {

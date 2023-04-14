@@ -11,7 +11,7 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 //CORS
-/*
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod();
                       });
 });
-*/
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -33,7 +33,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IQueryComanda, QueryComanda>();
 builder.Services.AddScoped<IQueryMercaderia, QueryMercaderia>();
 builder.Services.AddScoped<IQueryTipoMercaderia, QueryTipoMercaderia>();
-builder.Services.AddScoped<ICommandComanda, CommandComanda>(); 
+builder.Services.AddScoped<ICommandComanda, CommandComanda>();
+builder.Services.AddScoped<ICommandMercaderia, CommandMercaderia>();
 builder.Services.AddScoped<ICommandComandaMercaderia, CommandComandaMercaderia>();
 builder.Services.AddScoped<IServiceComanda, ServiceComanda>();
 builder.Services.AddScoped<IServiceComandaMercaderia, ServiceComandaMercaderia>();
