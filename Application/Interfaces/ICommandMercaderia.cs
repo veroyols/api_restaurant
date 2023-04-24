@@ -1,9 +1,16 @@
-﻿using Domain.Entities;
+﻿using Application.Schemas;
+using Domain.Entities;
 
 namespace Application.Interfaces
 {
     public interface ICommandMercaderia
     {
-        public Task<Mercaderia?> InsertMercaderia(Mercaderia mercaderia);
+        //1
+        public Task<int> InsertMercaderia(Mercaderia mercaderia);
+        //5
+        public Task UpdateMercaderia(int id, Mercaderia mercaderia);
+        //6
+        public Task DeleteMercaderia(int id);
+
     }
 }

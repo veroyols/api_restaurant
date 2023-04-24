@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Schemas;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +15,37 @@ namespace Infrastructure.cqrs_Command
         {
             _appDbContext = appDbContext;
         }
-        public async Task<Mercaderia?> InsertMercaderia(Mercaderia mercaderia)
+        //1
+        public async Task<int> InsertMercaderia(Mercaderia mercaderia)
         {
             await _appDbContext.AddAsync(mercaderia);
             await _appDbContext.SaveChangesAsync();
-            return _appDbContext.MercaderiaDb
-                        .Include(m => m.TipoMercaderia)
-                        .FirstOrDefaultAsync(m => m.MercaderiaId == mercaderia.MercaderiaId).Result;
+            return mercaderia.MercaderiaId;
+        }
+        //5
+        public async Task UpdateMercaderia(int id, Mercaderia mercaderia)
+        {
+            var up = await _appDbContext.MercaderiaDb.FindAsync(id);
+            if (up != null)
+            {
+                up.Nombre = mercaderia.Nombre;
+                up.TipoMercaderiaId = mercaderia.TipoMercaderiaId;
+                up.Precio = mercaderia.Precio;
+                up.Ingredientes = mercaderia.Ingredientes;
+                up.Preparacion = mercaderia.Preparacion;
+                up.Imagen = mercaderia.Imagen;
+            }
+            await _appDbContext.SaveChangesAsync();
+        }
+        //6
+        public async Task DeleteMercaderia(int id)
+        {
+            var mercaderia = await _appDbContext.MercaderiaDb.FindAsync(id);
+            if(mercaderia != null)
+            {
+                _appDbContext.Remove(mercaderia);
+            }
+            await _appDbContext.SaveChangesAsync();
         }
     }
 }

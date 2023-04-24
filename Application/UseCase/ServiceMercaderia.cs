@@ -14,56 +14,15 @@ namespace Application.UseCase
             _query = query;
             _command = command;
         }
-        public async Task<List<Mercaderia>> GetAllMercaderias()
+        //1,5
+        public async Task<bool> Exists(string name)
         {
-            var list = await _query.GetListMercaderia();
-            return list;
+            return await _query.ExistName(name);
         }
-
-        public async Task<int> GetAmountByType(int tipoMercaderiaId)
-        {
-            int cdad = await _query.GetAmountByType(tipoMercaderiaId);
-            return cdad;
-        }
-
-        public async Task<List<Mercaderia>> GetMercaderiasByType(int tipoMercaderiaId)
-        {
-            var list = await _query.GetListMercaderiaByType(tipoMercaderiaId);
-            return list;
-        }
-        public async Task<MercaderiaResponse?> GetMercaderiaById(int id)
-        {
-            var mercaderia = await _query.GetMercaderiaById(id);
-            if(mercaderia != null)
-            {
-                TipoMercaderiaResponse tipo = new ()
-                {
-                    id = mercaderia.TipoMercaderiaId,
-                    descripcion = mercaderia.TipoMercaderia.Descripcion,
-                };
-                return new()
-                {
-                    id = mercaderia.MercaderiaId,
-                    nombre = mercaderia.Nombre,
-                    tipo = tipo,
-                    precio = mercaderia.Precio,
-                    ingredientes = mercaderia.Ingredientes,
-                    preparacion = mercaderia.Preparacion,
-                    imagen = mercaderia.Imagen
-                };
-            }
-            return null;
-        }
-
-        public async Task<int> GetPrice(int id)
-        {
-            Mercaderia mercaderia = await _query.GetMercaderiaById(id);
-            return mercaderia.Precio;
-        }
-
+        //1
         public async Task<MercaderiaResponse> Create(MercaderiaRequest body)
         {
-            var mercaderia = await _command.InsertMercaderia(new Mercaderia
+            int mercaderiaId = await _command.InsertMercaderia(new Mercaderia
             {
                 Nombre = body.nombre,
                 TipoMercaderiaId = body.tipo,
@@ -72,22 +31,112 @@ namespace Application.UseCase
                 Preparacion = body.preparacion,
                 Imagen = body.imagen,
             });
-            TipoMercaderiaResponse tipo = new()
-            {
-                id = mercaderia.TipoMercaderiaId,
-                descripcion = mercaderia.TipoMercaderia.Descripcion,
-            };
-            var response = new MercaderiaResponse 
+            var mercaderia = await _query.GetMercaderiaById(mercaderiaId);
+
+            var response = new MercaderiaResponse
             {
                 id = mercaderia.MercaderiaId,
                 nombre = mercaderia.Nombre,
-                tipo = tipo,
+                tipo = new TipoMercaderiaResponse()
+                {
+                    id = mercaderia.TipoMercaderiaId,
+                    descripcion = mercaderia.TipoMercaderia.Descripcion,
+                },
                 precio = mercaderia.Precio,
                 ingredientes = mercaderia.Ingredientes,
                 preparacion = mercaderia.Preparacion,
                 imagen = mercaderia.Imagen,
             };
             return response;
+        }
+        //4
+        public async Task<List<MercaderiaGetResponse>>? GetFiltered(int tipo, string? nombre, string orden) //debug: tipo=0, string=null, orden="ASC"
+        {
+            List<MercaderiaGetResponse>? response = new();
+
+            var mercaderias = await _query.GetAll(tipo, nombre, orden);
+            if (mercaderias != null)
+            {
+                foreach (var item in mercaderias)
+                {
+                    response.Add(new MercaderiaGetResponse
+                    {
+                        id = item.MercaderiaId,
+                        nombre = item.Nombre,
+                        precio = item.Precio,
+                        tipo = new TipoMercaderiaResponse()
+                        {
+                            id = item.TipoMercaderiaId,
+                            descripcion = item.TipoMercaderia.Descripcion
+                        },
+                        imagen = item.Imagen,
+                    });
+                }
+            }
+            return response;
+        }
+        //5 PUT
+        public async Task<bool> Exists(int id)
+        {
+            return await _query.ExistId(id);
+        }
+        public async  Task<MercaderiaResponse> Update(int id, MercaderiaRequest body)
+        {
+            await _command.UpdateMercaderia(id, new Mercaderia
+            {
+                Nombre = body.nombre,
+                TipoMercaderiaId = body.tipo,
+                Precio = body.precio,
+                Ingredientes = body.ingredientes,
+                Preparacion = body.preparacion,
+                Imagen = body.imagen,
+            });
+            var mercaderia = await _query.GetMercaderiaById(id);
+
+            var response = new MercaderiaResponse
+            {
+                id = mercaderia.MercaderiaId,
+                nombre = mercaderia.Nombre,
+                tipo = new TipoMercaderiaResponse()
+                {
+                    id = mercaderia.TipoMercaderiaId,
+                    descripcion = mercaderia.TipoMercaderia.Descripcion,
+                },
+                precio = mercaderia.Precio,
+                ingredientes = mercaderia.Ingredientes,
+                preparacion = mercaderia.Preparacion,
+                imagen = mercaderia.Imagen,
+            };
+            return response;
+        }
+        //6
+        public async Task Delete(int id)
+        {
+            await _command.DeleteMercaderia(id);
+        }
+
+        //7
+        public async Task<MercaderiaResponse?> GetMercaderiaById(int id)
+        {
+            var mercaderia = await _query.GetMercaderiaById(id);
+            if(mercaderia != null)
+            {
+                return new()
+                {
+                    id = mercaderia.MercaderiaId,
+                    nombre = mercaderia.Nombre,
+                    tipo = new TipoMercaderiaResponse()
+                    {
+                        id = mercaderia.TipoMercaderiaId,
+                        descripcion = mercaderia.TipoMercaderia.Descripcion,
+                    },
+                    precio = mercaderia.Precio,
+                    ingredientes = mercaderia.Ingredientes,
+                    preparacion = mercaderia.Preparacion,
+                    imagen = mercaderia.Imagen
+                };
+            }
+            return null;
         }
     }
 }

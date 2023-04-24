@@ -9,38 +9,50 @@ namespace Infrastructure.cqrs_Query
     {
         private readonly AppDbContext _appDbContext;
 
-        public QueryMercaderia(AppDbContext context)
+        public QueryMercaderia(AppDbContext appDbContext)
         {
-            _appDbContext = context;
-        }
-
-        public async Task<int> GetAmountByType(int tipoMercaderiaId)
-        {
-            int amount = await Task.Run(() => _appDbContext.MercaderiaDb
-                .Where(el => el.TipoMercaderiaId == tipoMercaderiaId)
-                .Count());
-            return amount;
-        }
-
-        public async Task<List<Mercaderia>> GetListMercaderia()
-        {
-            var list = await Task.Run(() => _appDbContext.MercaderiaDb.ToList<Mercaderia>());
-            return list;
-        }
-
-        public async Task<List<Mercaderia>> GetListMercaderiaByType(int tipoMercaderiaId)
-        {
-            var list = await Task.Run(() => _appDbContext.MercaderiaDb
-                .Where(el => el.TipoMercaderiaId == tipoMercaderiaId)
-                .ToList<Mercaderia>());
-            return list;
+            _appDbContext = appDbContext;
         }
 
         public async Task<Mercaderia?> GetMercaderiaById(int mercaderiaId)
         {
-            var mercaderia = await Task.Run(() => _appDbContext.MercaderiaDb.Include(el => el.TipoMercaderia)
-                .FirstOrDefault(el => el.MercaderiaId == mercaderiaId));
+            var mercaderia = await _appDbContext.MercaderiaDb
+                .Include(el => el.TipoMercaderia)
+                .FirstOrDefaultAsync(el => el.MercaderiaId == mercaderiaId);
             return mercaderia;
         }
+
+        public async Task<List<Mercaderia>?> GetAll(int tipo, string? nombre, string orden)
+        {
+            if (orden == "DESC") 
+            { 
+                var list = await _appDbContext.MercaderiaDb
+                    .Include(el => el.TipoMercaderia)
+                    .OrderByDescending(el => el.Precio)
+                    .ToListAsync();
+                return list;
+            }
+            else
+            {
+                var list = await _appDbContext.MercaderiaDb
+                    .Include(el => el.TipoMercaderia)
+                    .OrderBy(el => el.Precio)
+                    .ToListAsync();
+                return list;
+            }
+        }
+
+        public async Task<bool> ExistName(string name)
+        {
+            var exist = await _appDbContext.MercaderiaDb.AnyAsync(el => el.Nombre == name);
+            return exist;
+
+        }
+        public async Task<bool> ExistId(int id)
+        {
+            var exist = await _appDbContext.MercaderiaDb.AnyAsync(el => el.MercaderiaId == id);
+            return exist;
+        }
+
     }
 }

@@ -32,14 +32,11 @@ builder.Services.AddSwaggerGen();
 // INYECCION POR DEPENDENCIAS//ver timelife
 builder.Services.AddScoped<IQueryComanda, QueryComanda>();
 builder.Services.AddScoped<IQueryMercaderia, QueryMercaderia>();
-builder.Services.AddScoped<IQueryTipoMercaderia, QueryTipoMercaderia>();
 builder.Services.AddScoped<ICommandComanda, CommandComanda>();
 builder.Services.AddScoped<ICommandMercaderia, CommandMercaderia>();
 builder.Services.AddScoped<ICommandComandaMercaderia, CommandComandaMercaderia>();
 builder.Services.AddScoped<IServiceComanda, ServiceComanda>();
-builder.Services.AddScoped<IServiceComandaMercaderia, ServiceComandaMercaderia>();
 builder.Services.AddScoped<IServiceMercaderia, ServiceMercaderia>();
-builder.Services.AddScoped<IServiceTipoMercaderia, ServiceTipoMercaderia>();
 
 //CONECTION STRING
 var connectionString = builder.Configuration["ConnectionString"];
