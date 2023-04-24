@@ -20,16 +20,34 @@ namespace TP2_REST_Scholz_Veronica.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<MercaderiaGetResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest)]
-        public IActionResult GetAll([FromQuery] int tipo, string? nombre, string orden = "ASC") //debug: tipo=0, string=null, orden="ASC"
+        public async Task<IActionResult> GetAll([FromQuery] int tipo, string? nombre, string orden = "ASC") //debug: tipo=0, string=null, orden="ASC"
         {
+            List<MercaderiaGetResponse>? result;
             try
             {
-                var result = _serviceMercaderia.GetFiltered(tipo, nombre, orden);
-                if(result != null)
+                if(tipo != 0)
                 {
-                    return new JsonResult(result.Result) { StatusCode = 200 };
+                    if (nombre != null)
+                    {
+                        result = await _serviceMercaderia.GetFilteredByNameAndTipe(tipo, nombre, orden);
+                    }
+                    else
+                    {
+                        result = await _serviceMercaderia.GetFilteredByTipe(tipo, orden);
+                    }
                 }
-                return new JsonResult(null) { StatusCode = 200 };
+                else 
+                {
+                    if(nombre != null)
+                    {
+                        result = await _serviceMercaderia.GetFilteredByName(nombre, orden);
+                    }
+                    else
+                    {
+                        result = await _serviceMercaderia.GetAll(orden);
+                    }
+                }
+                return new JsonResult(result) { StatusCode = 200 };
             }
             catch
             {

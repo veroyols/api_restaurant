@@ -21,8 +21,73 @@ namespace Infrastructure.cqrs_Query
                 .FirstOrDefaultAsync(el => el.MercaderiaId == mercaderiaId);
             return mercaderia;
         }
+        //4
+        public async Task<List<Mercaderia>?> GetFilteredByNameAndTipe(int tipo, string nombre, string orden)
+        {
+            if (orden == "DESC")
+            {
+                var list = await _appDbContext.MercaderiaDb
+                    .Include(el => el.TipoMercaderia)
+                    .Where(el => el.TipoMercaderiaId == tipo && el.Nombre == nombre)
+                    .OrderByDescending(el => el.Precio)
+                    .ToListAsync();
+                return list;
+            }
+            else
+            {
+                var list = await _appDbContext.MercaderiaDb
+                    .Include(el => el.TipoMercaderia)
+                    .Where(el => el.TipoMercaderiaId == tipo && el.Nombre == nombre)
+                    .OrderBy(el => el.Precio)
+                    .ToListAsync();
+                return list;
+            }
+        }
 
-        public async Task<List<Mercaderia>?> GetAll(int tipo, string? nombre, string orden)
+        public async Task<List<Mercaderia>?> GetFilteredByTipe(int tipo, string orden)
+        {
+            if (orden == "DESC")
+            {
+                var list = await _appDbContext.MercaderiaDb
+                    .Include(el => el.TipoMercaderia)
+                    .Where(el => el.TipoMercaderiaId == tipo)
+                    .OrderByDescending(el => el.Precio)
+                    .ToListAsync();
+                return list;
+            }
+            else
+            {
+                var list = await _appDbContext.MercaderiaDb
+                    .Include(el => el.TipoMercaderia)
+                    .Where(el => el.TipoMercaderiaId == tipo)
+                    .OrderBy(el => el.Precio)
+                    .ToListAsync();
+                return list;
+            }
+        }
+
+        public async Task<List<Mercaderia>?> GetFilteredByName(string nombre, string orden)
+        {
+            if (orden == "DESC")
+            {
+                var list = await _appDbContext.MercaderiaDb
+                    .Include(el => el.TipoMercaderia)
+                    .Where(el => el.Nombre == nombre)
+                    .OrderByDescending(el => el.Precio)
+                    .ToListAsync();
+                return list;
+            }
+            else
+            {
+                var list = await _appDbContext.MercaderiaDb
+                    .Include(el => el.TipoMercaderia)
+                    .Where(el => el.Nombre == nombre)
+                    .OrderBy(el => el.Precio)
+                    .ToListAsync();
+                return list;
+            }
+        }
+        public async Task<List<Mercaderia>?> GetAll(string orden)
         {
             if (orden == "DESC") 
             { 
@@ -53,6 +118,5 @@ namespace Infrastructure.cqrs_Query
             var exist = await _appDbContext.MercaderiaDb.AnyAsync(el => el.MercaderiaId == id);
             return exist;
         }
-
     }
 }

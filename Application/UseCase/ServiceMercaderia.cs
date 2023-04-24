@@ -14,6 +14,29 @@ namespace Application.UseCase
             _query = query;
             _command = command;
         }
+        public static List<MercaderiaGetResponse>?  MapList(List<Mercaderia>? mercaderias)
+        {
+            List<MercaderiaGetResponse>? list = new ();
+            if (mercaderias != null)
+            {
+                foreach (var item in mercaderias)
+                {
+                    list.Add(new MercaderiaGetResponse
+                    {
+                        id = item.MercaderiaId,
+                        nombre = item.Nombre,
+                        precio = item.Precio,
+                        tipo = new TipoMercaderiaResponse()
+                        {
+                            id = item.TipoMercaderiaId,
+                            descripcion = item.TipoMercaderia.Descripcion
+                        },
+                        imagen = item.Imagen,
+                    });
+                }
+            }
+            return list;
+        }
         //1,5
         public async Task<bool> Exists(string name)
         {
@@ -50,30 +73,27 @@ namespace Application.UseCase
             return response;
         }
         //4
-        public async Task<List<MercaderiaGetResponse>>? GetFiltered(int tipo, string? nombre, string orden) //debug: tipo=0, string=null, orden="ASC"
+        public async Task<List<MercaderiaGetResponse>?> GetFilteredByNameAndTipe(int tipo, string nombre, string orden)
         {
-            List<MercaderiaGetResponse>? response = new();
+            var mercaderias = await _query.GetFilteredByNameAndTipe(tipo, nombre, orden);
+            return MapList(mercaderias);
+        }
 
-            var mercaderias = await _query.GetAll(tipo, nombre, orden);
-            if (mercaderias != null)
-            {
-                foreach (var item in mercaderias)
-                {
-                    response.Add(new MercaderiaGetResponse
-                    {
-                        id = item.MercaderiaId,
-                        nombre = item.Nombre,
-                        precio = item.Precio,
-                        tipo = new TipoMercaderiaResponse()
-                        {
-                            id = item.TipoMercaderiaId,
-                            descripcion = item.TipoMercaderia.Descripcion
-                        },
-                        imagen = item.Imagen,
-                    });
-                }
-            }
-            return response;
+        public async Task<List<MercaderiaGetResponse>?> GetFilteredByTipe(int tipo, string orden)
+        {
+            var mercaderias = await _query.GetFilteredByTipe(tipo, orden);
+            return MapList(mercaderias);
+        }
+
+        public async Task<List<MercaderiaGetResponse>?> GetFilteredByName(string nombre, string orden)
+        {
+            var mercaderias = await _query.GetFilteredByName(nombre, orden);
+            return MapList(mercaderias);
+        }
+        public async Task<List<MercaderiaGetResponse>?> GetAll(string orden) //debug: tipo=0, string=null, orden="ASC"
+        {
+            var mercaderias = await _query.GetAll(orden);
+            return MapList(mercaderias);
         }
         //5 PUT
         public async Task<bool> Exists(int id)

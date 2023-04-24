@@ -5,8 +5,8 @@ Los criterios de aceptación son:
 2. Debe permitir registrar las comandas (el pedido del cliente)
 3. Debe enlistar las comandas con el detalle de los platos según la fecha que se le ingrese.
 4. Debe enlistar la información de la mercadería y permitir filtrar por nombre y/o tipo y ordenar por precio.
-5. Debe permitir modificar la información de la mercadería.
-6. Debe permitir eliminar la mercadería.
+5.OK Debe permitir modificar la información de la mercadería.
+6.OK Debe permitir eliminar la mercadería.
 7.OK edit Agregar búsqueda de mercadería por id
 8. Agregar búsqueda de comanda por id.
 
