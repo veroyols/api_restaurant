@@ -30,11 +30,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // INYECCION POR DEPENDENCIAS//ver timelife
-builder.Services.AddScoped<IQueryComanda, QueryComanda>();
-builder.Services.AddScoped<IQueryMercaderia, QueryMercaderia>();
 builder.Services.AddScoped<ICommandComanda, CommandComanda>();
-builder.Services.AddScoped<ICommandMercaderia, CommandMercaderia>();
 builder.Services.AddScoped<ICommandComandaMercaderia, CommandComandaMercaderia>();
+builder.Services.AddScoped<ICommandMercaderia, CommandMercaderia>();
+builder.Services.AddScoped<IQueryComanda, QueryComanda>();
+builder.Services.AddScoped<IQueryFormaEntrega, QueryFormaEntrega>();
+builder.Services.AddScoped<IQueryMercaderia, QueryMercaderia>();
 builder.Services.AddScoped<IServiceComanda, ServiceComanda>();
 builder.Services.AddScoped<IServiceMercaderia, ServiceMercaderia>();
 

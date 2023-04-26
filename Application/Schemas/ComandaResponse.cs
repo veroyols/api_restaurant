@@ -1,4 +1,7 @@
-﻿namespace Application.Schemas
+﻿using Application.Schemas;
+using Domain.Entities;
+
+namespace Application.Schemas
 {
     public class ComandaResponse
     {

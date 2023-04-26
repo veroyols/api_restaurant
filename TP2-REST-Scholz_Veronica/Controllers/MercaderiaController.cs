@@ -65,14 +65,7 @@ namespace TP2_REST_Scholz_Veronica.Controllers
             try
             {
                 bool exists = _serviceMercaderia.Exists(body.nombre).Result;
-                //no la captura
-               
-                if (body == null || body.tipo == null || body.precio == null || body.ingredientes == null || body.preparacion == null || body.imagen == null)
-                {
-                    throw new Exception();
-                }
-
-                if (!exists)
+               if (!exists)
                 {
                     MercaderiaResponse result = await _serviceMercaderia.Create(body);
                     return new JsonResult(result) { StatusCode = 201 };

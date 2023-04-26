@@ -1,4 +1,5 @@
-﻿using Application.Schemas;
+﻿using Application.Interfaces;
+using Application.Schemas;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TP2_REST_Scholz_Veronica.Controllers
@@ -7,15 +8,25 @@ namespace TP2_REST_Scholz_Veronica.Controllers
     [ApiController]
     public class ComandaController : ControllerBase
     {
+        private readonly IServiceComanda _serviceComanda;
+        private readonly IServiceMercaderia _serviceMercaderia;
+
+        public ComandaController(IServiceComanda serviceComanda, IServiceMercaderia serviceMercaderia)
+        {
+            _serviceComanda = serviceComanda;
+            _serviceMercaderia = serviceMercaderia;
+        }
         //3. Debe enlistar las comandas con el detalle de los platos según la fecha que se le ingrese
         [HttpGet]
         [ProducesResponseType(typeof(List<ComandaResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest)]
-        public IActionResult GetAll([FromQuery] string fecha)
+        public async Task<IActionResult> GetAll([FromQuery] string fecha)
         {
             try
             {
-                return new JsonResult(new ComandaResponse()) { StatusCode = 200 };  
+                List<ComandaResponse> result = new();
+                result = await _serviceComanda.GetAll(fecha);
+                return new JsonResult(result) { StatusCode = 200 };  
             }
             catch
             {
@@ -27,37 +38,43 @@ namespace TP2_REST_Scholz_Veronica.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(ComandaResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest)]
-        public IActionResult Add([FromBody] ComandaRequest body)
+        public async Task<IActionResult> Add([FromBody] ComandaRequest body)
         {
             try
             {
-                return new JsonResult(new ComandaResponse()) { StatusCode = 201 };
+                var response = await _serviceComanda.InsertComanda(body);
+                return new JsonResult(response) { StatusCode = 201 }; 
             }
             catch
             {
                 return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
             }
-        }
+        } //deberia agregar el id al response?? 
 
         //8. Agregar búsqueda de comanda por id.
-        [HttpPut("{id}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(ComandaGetResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status404NotFound)]
-        public IActionResult GetComanda(string id) //"3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        public async Task<IActionResult> Get(string id) //"3fa85f64-5717-4562-b3fc-2c963f66afa6",
         {
             try
             {
-                return new JsonResult(new ComandaGetResponse()) { StatusCode = 200 };
+                var result = await _serviceComanda.GetComandaById(id);
+                if (result == null)
+                {
+                    return new JsonResult(new BadRequest { mensaje = "Not Found" }) { StatusCode = 404 };
+                }
+                else
+                {
+                    return new JsonResult(result) { StatusCode = 200 };
+                }
             }
-            //catch
-            //{
-            //    return new JsonResult(new BadRequest { mensaje = "Not Found" }) { StatusCode = 404 }; 
-            //}
             catch
             {
-                return new JsonResult(new BadRequest { mensaje = "Bad Request"}) { StatusCode = 400 }; 
+                return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
             }
+
         }
     }
 }

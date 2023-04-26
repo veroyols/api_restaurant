@@ -12,11 +12,21 @@ namespace Infrastructure.cqrs_Command
         {
             _appDbContext = appDbContext;
         }
-
-        public async Task InsertComanda(Comanda comanda)
+        //3
+        public async Task InsertComanda(Comanda comanda, List<ComandaMercaderia> comandaMercaderias)
         {
-            _appDbContext.Add(comanda);
-            await _appDbContext.SaveChangesAsync();
+            using var dbContextTransaction = _appDbContext.Database.BeginTransaction();
+            try
+            {
+                await _appDbContext.ComandaDb.AddAsync(comanda);
+                await _appDbContext.ComandaMercaderiaDb.AddRangeAsync(comandaMercaderias);
+                await _appDbContext.SaveChangesAsync();
+                dbContextTransaction.Commit();                   
+            }
+            catch 
+            {
+                dbContextTransaction.Rollback();
+            }
         }
     }
 }

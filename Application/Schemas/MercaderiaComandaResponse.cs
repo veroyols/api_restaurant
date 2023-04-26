@@ -1,4 +1,6 @@
-﻿namespace Application.Schemas
+﻿using Application.Schemas;
+
+namespace Application.Schemas
 {
     public class MercaderiaComandaResponse
     { 
