@@ -3,7 +3,6 @@ using Application.Schemas;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace Infrastructure.cqrs_Query
 {

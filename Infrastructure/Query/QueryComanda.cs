@@ -15,14 +15,11 @@ namespace Infrastructure.cqrs_Query
             _appDbContext = context;
         }
         //3
-        public async Task<List<Comanda>> GetAllComandas(DateTime fecha)
+        public async Task<List<Guid>> GetAllComandaIds(DateTime fecha)
         {
             var list = await _appDbContext.ComandaDb
-                .Include(el => el.ComandaMercaderias)
-                .ThenInclude(el => el.Mercaderia)     
-                .ThenInclude(el => el.TipoMercaderia)
-                .Include(el => el.FormaEntrega)
                 .Where(el => el.Fecha == fecha)
+                .Select(el => el.ComandaId)
                 .ToListAsync();
             return list;
         }
@@ -32,7 +29,6 @@ namespace Infrastructure.cqrs_Query
             var comanda = await _appDbContext.ComandaDb
                 .Include(el => el.FormaEntrega)
                 .Include(el => el.ComandaMercaderias)
-                .ThenInclude(el => el.Mercaderia)
                 .FirstOrDefaultAsync(el => el.ComandaId == comandaId);
             return comanda;
         }

@@ -10,13 +10,18 @@ namespace Application.UseCase
         private readonly IQueryComanda _query;
         private readonly IQueryMercaderia _queryMercaderia;
         private readonly IQueryFormaEntrega _queryFormaEntrega;
+        private readonly IQueryComandaMercaderia _queryComandaMercaderia;
+        private readonly IQueryTipoMercaderia _queryTipoMercaderia;
 
-        public ServiceComanda(ICommandComanda command, IQueryComanda query, IQueryMercaderia queryMercaderia, IQueryFormaEntrega queryFormaEntrega)
+
+        public ServiceComanda(ICommandComanda command, IQueryComanda query, IQueryMercaderia queryMercaderia, IQueryFormaEntrega queryFormaEntrega, IQueryComandaMercaderia queryComandaMercaderia, IQueryTipoMercaderia queryTipoMercaderia)
         {
             _command = command;
             _query = query;
             _queryMercaderia = queryMercaderia;
             _queryFormaEntrega = queryFormaEntrega;
+            _queryComandaMercaderia = queryComandaMercaderia;
+            _queryTipoMercaderia = queryTipoMercaderia;
         }
         //2
         public async Task<ComandaResponse> InsertComanda(ComandaRequest body)
@@ -27,11 +32,18 @@ namespace Application.UseCase
             List<ComandaMercaderia> comandaMercaderias = new();
             foreach (var id in body.mercaderias)
             {
-                comandaMercaderias.Add(new ComandaMercaderia
+                if(await _queryMercaderia.ExistId(id))
                 {
-                    MercaderiaId = id,
-                    ComandaId = comandaId
-                });               
+                    comandaMercaderias.Add(new ComandaMercaderia
+                    {
+                        MercaderiaId = id,
+                        ComandaId = comandaId
+                    });
+                }
+                else
+                {
+                    throw new Exception();
+                }
             }
             List<MercaderiaComandaResponse> mercaderiaComandaResponses = await _queryMercaderia.GetListByIds(body.mercaderias);
             foreach (var mercaderia in mercaderiaComandaResponses)
@@ -41,6 +53,7 @@ namespace Application.UseCase
 
             await _command.InsertComanda(new Comanda
                 {
+                    ComandaId = comandaId,
                     FormaEntregaId = body.formaEntrega,
                     PrecioTotal = amount,
                     Fecha = date
@@ -59,9 +72,14 @@ namespace Application.UseCase
         //3
         public async Task<List<ComandaResponse>> GetAll(string fecha)
         {
-            DateTime date = new();
-            var response = await _query.GetAllComandas(date);
-            return new List<ComandaResponse>();
+            DateTime date = DateTime.Parse(fecha);
+            List<ComandaResponse> response = new();
+            List<Guid> comandaIds = await _query.GetAllComandaIds(date);
+            if(comandaIds.Count > 0)
+            {
+                response = await _queryComandaMercaderia.GetListByIds(comandaIds);
+            }
+            return response;
         }
         //8
         public async Task<ComandaGetResponse?> GetComandaById(string id)
@@ -73,6 +91,9 @@ namespace Application.UseCase
                 List<MercaderiaGetResponse> list = new();
                 foreach(var item in comanda.ComandaMercaderias)
                 {
+                    int tipeId = item.Mercaderia.TipoMercaderiaId;
+                    string tipeDescription = await _queryTipoMercaderia.GetTipoMercaderia(tipeId);
+
                     list.Add(new MercaderiaGetResponse()
                     {
                         id = item.MercaderiaId,
@@ -80,20 +101,22 @@ namespace Application.UseCase
                         precio = item.Mercaderia.Precio,
                         tipo = new TipoMercaderiaResponse() 
                         {
-                            id = item.Mercaderia.TipoMercaderiaId,
-                            descripcion = item.Mercaderia.TipoMercaderia.Descripcion
-                        },
+                            id = tipeId,
+                            descripcion = tipeDescription
+                },
                         imagen = item.Mercaderia.Imagen
                     });
-
                 }
+                int deliveryId = comanda.FormaEntregaId;
+                string deliveryDescription = await _queryFormaEntrega.GetFormaEntrega(deliveryId);
+
                 return new()
                 {
                     mercaderias = list,
                     formaEntrega = new Schemas.FormaEntrega()
                     {
-                        id = comanda.FormaEntregaId,
-                        descripcion = comanda.FormaEntrega.Descripcion
+                        id = deliveryId,
+                        descripcion = deliveryDescription
                     },
                     total = comanda.PrecioTotal,
                     fecha = comanda.Fecha,

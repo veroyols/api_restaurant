@@ -34,8 +34,10 @@ builder.Services.AddScoped<ICommandComanda, CommandComanda>();
 builder.Services.AddScoped<ICommandComandaMercaderia, CommandComandaMercaderia>();
 builder.Services.AddScoped<ICommandMercaderia, CommandMercaderia>();
 builder.Services.AddScoped<IQueryComanda, QueryComanda>();
+builder.Services.AddScoped<IQueryComandaMercaderia, QueryComandaMercaderia>();
 builder.Services.AddScoped<IQueryFormaEntrega, QueryFormaEntrega>();
 builder.Services.AddScoped<IQueryMercaderia, QueryMercaderia>();
+builder.Services.AddScoped<IQueryTipoMercaderia, QueryTipoMercaderia>();
 builder.Services.AddScoped<IServiceComanda, ServiceComanda>();
 builder.Services.AddScoped<IServiceMercaderia, ServiceMercaderia>();
 

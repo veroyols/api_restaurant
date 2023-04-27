@@ -3,18 +3,17 @@ using Infrastructure.Persistence;
 
 namespace Infrastructure.cqrs_Query
 {
-    public class QueryFormaEntrega : IQueryFormaEntrega
+    public class QueryTipoMercaderia : IQueryTipoMercaderia
     {
         private readonly AppDbContext _appDbContext;
 
-        public QueryFormaEntrega(AppDbContext appDbContext)
+        public QueryTipoMercaderia(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
         }
-        //2
-        public async Task<string> GetFormaEntrega(int id)
+        public async Task<string> GetTipoMercaderia(int id)
         {
-            var query = await _appDbContext.FormaEntregaDb.FindAsync(id);
+            var query = await _appDbContext.TipoMercaderiaDb.FindAsync(id);
             return query.Descripcion;
         }
     }

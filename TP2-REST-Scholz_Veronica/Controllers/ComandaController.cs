@@ -9,18 +9,16 @@ namespace TP2_REST_Scholz_Veronica.Controllers
     public class ComandaController : ControllerBase
     {
         private readonly IServiceComanda _serviceComanda;
-        private readonly IServiceMercaderia _serviceMercaderia;
 
-        public ComandaController(IServiceComanda serviceComanda, IServiceMercaderia serviceMercaderia)
+        public ComandaController(IServiceComanda serviceComanda)
         {
             _serviceComanda = serviceComanda;
-            _serviceMercaderia = serviceMercaderia;
         }
         //3. Debe enlistar las comandas con el detalle de los platos según la fecha que se le ingrese
         [HttpGet]
         [ProducesResponseType(typeof(List<ComandaResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll([FromQuery] string fecha)
+        public async Task<IActionResult> GetAll([FromQuery] string fecha) //mm/dd/yyyy o mm-dd-yyyy, yyyy o yy 
         {
             try
             {
@@ -60,7 +58,7 @@ namespace TP2_REST_Scholz_Veronica.Controllers
         {
             try
             {
-                var result = await _serviceComanda.GetComandaById(id);
+                var result = await _serviceComanda.GetComandaById(id.ToLower());
                 if (result == null)
                 {
                     return new JsonResult(new BadRequest { mensaje = "Not Found" }) { StatusCode = 404 };
