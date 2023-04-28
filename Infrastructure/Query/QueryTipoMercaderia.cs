@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.cqrs_Query
 {
@@ -15,6 +16,12 @@ namespace Infrastructure.cqrs_Query
         {
             var query = await _appDbContext.TipoMercaderiaDb.FindAsync(id);
             return query.Descripcion;
+        }
+
+        public async Task<bool> TipeExists(int? id)
+        {
+            bool exist = await _appDbContext.TipoMercaderiaDb.AnyAsync(el => el.TipoMercaderiaId == id);
+            return exist;
         }
     }
 }

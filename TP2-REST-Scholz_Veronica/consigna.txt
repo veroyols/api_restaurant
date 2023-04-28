@@ -2,13 +2,13 @@ Parte 2
 
 Los criterios de aceptación son:
 1.OK Debe permitir registrar la mercadería (platos, bebida o postre).
-2. Debe permitir registrar las comandas (el pedido del cliente)
-3. Debe enlistar las comandas con el detalle de los platos según la fecha que se le ingrese.
+2.ok Debe permitir registrar las comandas (el pedido del cliente)
+3.ok Debe enlistar las comandas con el detalle de los platos según la fecha que se le ingrese.
 4.OK Debe enlistar la información de la mercadería y permitir filtrar por nombre y/o tipo y ordenar por precio.
 5.OK Debe permitir modificar la información de la mercadería.
 6.OK Debe permitir eliminar la mercadería.
 7.OK edit Agregar búsqueda de mercadería por id
-8. Agregar búsqueda de comanda por id.
+8.ok Agregar búsqueda de comanda por id.
 
 Consigna:
 Realizar una aplicación con la arquitectura API Rest, que exponga los servicios necesarios para cumplir con los criterios de aceptación.
@@ -17,11 +17,11 @@ Se deberá reescribir la aplicación de consola realizada en el TP 1 y adaptarla a
 ? Los endpoints deben respetar la definición de OpenApi. Pueden ver la definición utilizando la herramienta de Swagger UI.
 
 Aclaración:
-? Las url, parámetros, body, status y response definidos en la definición de OpenApi deben respetarse.
-? Los endpoints con método HTTP [Options] definido en el archivo, deben ser reemplazado por el estudiante según el estándar REST.
+ Las url, parámetros, body, status y response definidos en la definición de OpenApi deben respetarse.
+ Los endpoints con método HTTP [Options] definido en el archivo, deben ser reemplazado por el estudiante según el estándar REST.
 ? La mercadería no puede ser eliminada si existe una encomienda que dependa de esta.
 ? No puede existir mercadería con el mismo nombre
-? Los filtros son siempre opcionales
+ Los filtros son siempre opcionales
 ? El filtro de orden sólo puede admitir los valores “ASC” y “DESC”
 
 

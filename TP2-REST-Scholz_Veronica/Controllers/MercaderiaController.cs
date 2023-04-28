@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Schemas;
 using Application.Interfaces;
-using Azure.Core;
 
 namespace TP2_REST_Scholz_Veronica.Controllers
 {
@@ -20,23 +19,12 @@ namespace TP2_REST_Scholz_Veronica.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<MercaderiaGetResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll([FromQuery] int tipo, string? nombre, string orden = "ASC") //debug: tipo=0, string=null, orden="ASC"
+        public async Task<IActionResult> GetAll([FromQuery] int? tipo, string? nombre, string orden = "ASC") //debug: tipo=0, string=null, orden="ASC"
         {
             List<MercaderiaGetResponse>? result;
             try
             {
-                if(tipo != 0)
-                {
-                    if (nombre != null)
-                    {
-                        result = await _serviceMercaderia.GetFilteredByNameAndTipe(tipo, nombre, orden);
-                    }
-                    else
-                    {
-                        result = await _serviceMercaderia.GetFilteredByTipe(tipo, orden);
-                    }
-                }
-                else 
+                if(tipo == null || tipo == 0)
                 {
                     if(nombre != null)
                     {
@@ -46,6 +34,22 @@ namespace TP2_REST_Scholz_Veronica.Controllers
                     {
                         result = await _serviceMercaderia.GetAll(orden);
                     }
+                }
+                else 
+                {
+                    bool exist = await _serviceMercaderia.TipeExists(tipo);
+                    if (!exist)
+                    {
+                        throw new Exception();
+                    }
+                    if (nombre != null)
+                    {
+                        result = await _serviceMercaderia.GetFilteredByNameAndTipe(tipo, nombre, orden);
+                    }
+                    else
+                    {
+                        result = await _serviceMercaderia.GetFilteredByTipe(tipo, orden);
+                    } 
                 }
                 return new JsonResult(result) { StatusCode = 200 };
             }
@@ -147,19 +151,27 @@ namespace TP2_REST_Scholz_Veronica.Controllers
         {
             try
             {
-                var result = await _serviceMercaderia.GetMercaderiaById(id);
-                if (result != null)
+                bool comandaExist = await _serviceMercaderia.ComandaMercaderiaExist(id);
+                if (comandaExist)
                 {
-                    await _serviceMercaderia.Delete(id);
-                    return new JsonResult(result) { StatusCode = 200 };
-                } else
+                    return new JsonResult(new BadRequest { mensaje = "Conflict" }) { StatusCode = 409 };
+                }
+                else
                 {
-                    return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
+                    var result = await _serviceMercaderia.GetMercaderiaById(id);
+                    if (result != null)
+                    {
+                        await _serviceMercaderia.Delete(id);
+                        return new JsonResult(result) { StatusCode = 200 };
+                    } else
+                    {
+                        return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
+                    }
                 }
             }
             catch
             {
-                return new JsonResult(new BadRequest { mensaje = "Conflict" }) { StatusCode = 409 }; 
+                return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
             }
         }
     }

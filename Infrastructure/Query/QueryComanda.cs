@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using Application.Schemas;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +14,7 @@ namespace Infrastructure.cqrs_Query
             _appDbContext = context;
         }
         //3
-        public async Task<List<Guid>> GetAllComandaIds(DateTime fecha)
+        public async Task<List<Guid>> GetAllComandaIds(DateTime fecha) 
         {
             var list = await _appDbContext.ComandaDb
                 .Where(el => el.Fecha == fecha)
@@ -29,6 +28,8 @@ namespace Infrastructure.cqrs_Query
             var comanda = await _appDbContext.ComandaDb
                 .Include(el => el.FormaEntrega)
                 .Include(el => el.ComandaMercaderias)
+                .ThenInclude(el => el.Mercaderia)
+                
                 .FirstOrDefaultAsync(el => el.ComandaId == comandaId);
             return comanda;
         }

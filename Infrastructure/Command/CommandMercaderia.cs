@@ -1,9 +1,6 @@
 ﻿using Application.Interfaces;
-using Application.Schemas;
 using Domain.Entities;
 using Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using System.Timers;
 
 namespace Infrastructure.cqrs_Command
 {

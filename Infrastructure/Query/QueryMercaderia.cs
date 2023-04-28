@@ -29,7 +29,7 @@ namespace Infrastructure.cqrs_Query
             return list;
         }
         //4
-        public async Task<List<Mercaderia>?> GetFilteredByNameAndTipe(int tipo, string nombre, string orden)
+        public async Task<List<Mercaderia>?> GetFilteredByNameAndTipe(int? tipo, string nombre, string orden)
         {
             if (orden == "DESC")
             {
@@ -51,7 +51,7 @@ namespace Infrastructure.cqrs_Query
             }
         }
         //4
-        public async Task<List<Mercaderia>?> GetFilteredByTipe(int tipo, string orden)
+        public async Task<List<Mercaderia>?> GetFilteredByTipe(int? tipo, string orden)
         {
             if (orden == "DESC")
             {
@@ -114,6 +114,13 @@ namespace Infrastructure.cqrs_Query
                 return list;
             }
         }
+        //6
+        public async Task<bool> ComandaMercaderiaExist(int mercaderiaId)
+        {
+            bool exist = await _appDbContext.ComandaMercaderiaDb
+                .AnyAsync(el => el.MercaderiaId == mercaderiaId);
+            return exist;
+        }
         //7
         public async Task<Mercaderia?> GetMercaderiaById(int mercaderiaId)
         {
@@ -124,13 +131,13 @@ namespace Infrastructure.cqrs_Query
         }
         public async Task<bool> ExistName(string name)
         {
-            var exist = await _appDbContext.MercaderiaDb.AnyAsync(el => el.Nombre == name);
+            bool exist = await _appDbContext.MercaderiaDb.AnyAsync(el => el.Nombre == name);
             return exist;
 
         }
         public async Task<bool> ExistId(int id)
         {
-            var exist = await _appDbContext.MercaderiaDb.AnyAsync(el => el.MercaderiaId == id);
+            bool exist = await _appDbContext.MercaderiaDb.AnyAsync(el => el.MercaderiaId == id);
             return exist;
         }
     }

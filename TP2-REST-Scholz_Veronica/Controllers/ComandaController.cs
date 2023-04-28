@@ -72,7 +72,6 @@ namespace TP2_REST_Scholz_Veronica.Controllers
             {
                 return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
             }
-
         }
     }
 }

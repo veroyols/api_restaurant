@@ -28,6 +28,8 @@ namespace Application.UseCase
         {
             Guid comandaId = Guid.NewGuid();
             DateTime date = DateTime.Now;
+            DateTime dateFormat = new(date.Year, date.Month, date.Day, 0, 0, 0);
+
             int amount = 0;
             List<ComandaMercaderia> comandaMercaderias = new();
             foreach (var id in body.mercaderias)
@@ -56,25 +58,27 @@ namespace Application.UseCase
                     ComandaId = comandaId,
                     FormaEntregaId = body.formaEntrega,
                     PrecioTotal = amount,
-                    Fecha = date
-                }, comandaMercaderias
+                    Fecha = dateFormat
+            }, comandaMercaderias
             ); //EXCEPTION
 
             string delivery = await _queryFormaEntrega.GetFormaEntrega(body.formaEntrega);
             return new ComandaResponse
             {
+                id = comandaId,
                 mercaderias = mercaderiaComandaResponses,
                 formaEntrega = new Schemas.FormaEntrega { id = body.formaEntrega, descripcion = delivery },
                 total = amount,
-                fecha = date
+                fecha = dateFormat
             };
         }
         //3
         public async Task<List<ComandaResponse>> GetAll(string fecha)
         {
             DateTime date = DateTime.Parse(fecha);
+            DateTime dateFormat = new(date.Year, date.Month, date.Day, 0, 0, 0);
             List<ComandaResponse> response = new();
-            List<Guid> comandaIds = await _query.GetAllComandaIds(date);
+            List<Guid> comandaIds = await _query.GetAllComandaIds(dateFormat);
             if(comandaIds.Count > 0)
             {
                 response = await _queryComandaMercaderia.GetListByIds(comandaIds);
@@ -84,39 +88,37 @@ namespace Application.UseCase
         //8
         public async Task<ComandaGetResponse?> GetComandaById(string id)
         {
-            Guid idGuid = new (id);
+            Guid.TryParseExact(id, "D", out Guid idGuid);
             var comanda = await _query.GetComandaById(idGuid);
             if (comanda != null)
             {
                 List<MercaderiaGetResponse> list = new();
-                foreach(var item in comanda.ComandaMercaderias)
+                foreach(ComandaMercaderia item in comanda.ComandaMercaderias)
                 {
-                    int tipeId = item.Mercaderia.TipoMercaderiaId;
-                    string tipeDescription = await _queryTipoMercaderia.GetTipoMercaderia(tipeId);
-
-                    list.Add(new MercaderiaGetResponse()
+                    if (!list.Exists(el => el.id == item.MercaderiaId))
                     {
-                        id = item.MercaderiaId,
-                        nombre = item.Mercaderia.Nombre,
-                        precio = item.Mercaderia.Precio,
-                        tipo = new TipoMercaderiaResponse() 
+                        list.Add(new MercaderiaGetResponse()
                         {
-                            id = tipeId,
-                            descripcion = tipeDescription
-                },
-                        imagen = item.Mercaderia.Imagen
-                    });
+                            id = item.MercaderiaId,
+                            nombre = item.Mercaderia.Nombre,
+                            precio = item.Mercaderia.Precio,
+                            tipo = new TipoMercaderiaResponse() 
+                            {
+                                id = item.Mercaderia.TipoMercaderiaId,
+                                descripcion = await _queryTipoMercaderia.GetTipoMercaderia(item.Mercaderia.TipoMercaderiaId)
+                            },
+                            imagen = item.Mercaderia.Imagen
+                        });
+                    }
                 }
-                int deliveryId = comanda.FormaEntregaId;
-                string deliveryDescription = await _queryFormaEntrega.GetFormaEntrega(deliveryId);
 
                 return new()
                 {
                     mercaderias = list,
                     formaEntrega = new Schemas.FormaEntrega()
                     {
-                        id = deliveryId,
-                        descripcion = deliveryDescription
+                        id = comanda.FormaEntregaId,
+                        descripcion = await _queryFormaEntrega.GetFormaEntrega(comanda.FormaEntregaId)
                     },
                     total = comanda.PrecioTotal,
                     fecha = comanda.Fecha,

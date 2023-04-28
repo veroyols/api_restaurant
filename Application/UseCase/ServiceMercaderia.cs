@@ -8,11 +8,13 @@ namespace Application.UseCase
     {
         private readonly IQueryMercaderia _query;
         private readonly ICommandMercaderia _command;
+        private readonly IQueryTipoMercaderia _queryTipoMercaderia;
 
-        public ServiceMercaderia(IQueryMercaderia query, ICommandMercaderia command)
+        public ServiceMercaderia(IQueryMercaderia query, ICommandMercaderia command, IQueryTipoMercaderia queryTipoMercaderia)
         {
             _query = query;
             _command = command;
+            _queryTipoMercaderia = queryTipoMercaderia;
         }
         public static List<MercaderiaGetResponse>?  MapList(List<Mercaderia>? mercaderias)
         {
@@ -73,13 +75,13 @@ namespace Application.UseCase
             return response;
         }
         //4
-        public async Task<List<MercaderiaGetResponse>?> GetFilteredByNameAndTipe(int tipo, string nombre, string orden)
+        public async Task<List<MercaderiaGetResponse>?> GetFilteredByNameAndTipe(int? tipo, string nombre, string orden)
         {
             var mercaderias = await _query.GetFilteredByNameAndTipe(tipo, nombre, orden);
             return MapList(mercaderias);
         }
 
-        public async Task<List<MercaderiaGetResponse>?> GetFilteredByTipe(int tipo, string orden)
+        public async Task<List<MercaderiaGetResponse>?> GetFilteredByTipe(int? tipo, string orden)
         {
             var mercaderias = await _query.GetFilteredByTipe(tipo, orden);
             return MapList(mercaderias);
@@ -99,6 +101,10 @@ namespace Application.UseCase
         public async Task<bool> Exists(int id)
         {
             return await _query.ExistId(id);
+        }
+        public async Task<bool> TipeExists(int? id)
+        {
+            return await _queryTipoMercaderia.TipeExists(id);
         }
         public async  Task<MercaderiaResponse> Update(int id, MercaderiaRequest body)
         {
@@ -134,7 +140,11 @@ namespace Application.UseCase
         {
             await _command.DeleteMercaderia(id);
         }
-
+        public async Task<bool> ComandaMercaderiaExist(int mercaderiaId)
+        {
+            var exist = await _query.ComandaMercaderiaExist(mercaderiaId);
+            return exist;
+        }
         //7
         public async Task<MercaderiaResponse?> GetMercaderiaById(int id)
         {
