@@ -5,7 +5,22 @@ using Infrastructure.cqrs_Query;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
+//CORS
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
+
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3001", "http://172.17.208.1:3001")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                      });
+});
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -29,6 +44,8 @@ var connectionString = builder.Configuration["ConnectionString"];
 builder.Services.AddDbContext<AppDbContext>(op => op.UseSqlServer(connectionString));
 
 var app = builder.Build();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
