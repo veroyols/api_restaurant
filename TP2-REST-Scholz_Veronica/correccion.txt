@@ -1,0 +1,38 @@
+Scholz:
+  CA:
+  +  3: Debe enlistar las comandas con el detalle de los platos según la fecha que se le ingrese.
+     Aprobado: false
+     Comentarios:  
+         si no se ingresan parametros -> GetAll
+         si no se puede parsear -> "mensaje": "No ha ingresado una fecha válida."
+  +  4: Debe enlistar la información de la mercadería y permitir filtrar por nombre y/o tipo y ordenar por precio.
+     Aprobado: false
+     Comentarios:  
+         si no se ingresan parametros -> GetAll
+         si tipo no existe ->  "mensaje": "El valor ingresado del parámetro 'tipo' no existe en la base de datos."
+         si nombre no existe -> []
+         si ingreso cualquier orden -> "message": "El parámetro 'orden' debe ser 'ASC' o 'DESC'."
+
+  + No crear comandas con lista de mercaderias vacia
+  + /api/v1
+
+  Code:
+    CleanCode:
+    - Arrojar el objeto Exception se considera mala práctica ya que corresponde a un objeto genérico,
+      se debería arrojar siempre una excepción acorde a lo que sucedio.
+    Arquitectura:
+    Lógica:
+    + Las url de los endpoints no son las solicitadas
+    + Los Query Params deben ser siempre opcionales.
+    + En los Get que poseen query params, en caso de no encontrar registros que cumplan con el filtro se debe devolver
+      200 y la array vacía.
+    + Los mensajes de error deben ser más claros.
+    + No se pueden obtener todas las comandas.  
+  Restful:
+    Aprobado: false
+    Comentarios:
+    + El response de mensaje de error no respeta la estuctura solicitada.
+    + la api get comanda/:id no respeta el response solicitado.
+    + la api get comanda/:id devuelve 404 cuando se ingresa un valor invalido.
+    + la api delete mercadería/:id devuelve 400 cuando se ingresa un id inexistente.
+

@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Schemas;
 using Domain.Entities;
+using Microsoft.VisualBasic;
 
 namespace Application.UseCase
 {
@@ -73,23 +74,30 @@ namespace Application.UseCase
             };
         }
         //3
-        public async Task<List<ComandaResponse>> GetAll(string fecha)
+        public async Task<List<ComandaResponse>> GetAll(DateTime? fecha)
         {
-            DateTime date = DateTime.Parse(fecha);
-            DateTime dateFormat = new(date.Year, date.Month, date.Day, 0, 0, 0);
+            List<Guid> comandaIds = new();
             List<ComandaResponse> response = new();
-            List<Guid> comandaIds = await _query.GetAllComandaIds(dateFormat);
-            if(comandaIds.Count > 0)
+
+            if (fecha != null)
+            {
+                comandaIds = await _query.GetAllComandaIds(fecha);
+            }
+            else
+            {
+                comandaIds = await _query.GetAllComandaIds(null);
+            }
+
+            if (comandaIds.Count > 0)
             {
                 response = await _queryComandaMercaderia.GetListByIds(comandaIds);
             }
             return response;
         }
         //8
-        public async Task<ComandaGetResponse?> GetComandaById(string id)
+        public async Task<ComandaGetResponse?> GetComandaById(Guid id)
         {
-            Guid.TryParseExact(id, "D", out Guid idGuid);
-            var comanda = await _query.GetComandaById(idGuid);
+            var comanda = await _query.GetComandaById(id);
             if (comanda != null)
             {
                 List<MercaderiaGetResponse> list = new();
@@ -112,8 +120,9 @@ namespace Application.UseCase
                     }
                 }
 
-                return new()
+                return new ComandaGetResponse()
                 {
+                    id = id,
                     mercaderias = list,
                     formaEntrega = new Schemas.FormaEntrega()
                     {

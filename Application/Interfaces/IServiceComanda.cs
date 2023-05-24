@@ -7,9 +7,9 @@ namespace Application.Interfaces
         //2
         public Task<ComandaResponse> InsertComanda(ComandaRequest body);
         //3
-        public Task<List<ComandaResponse>> GetAll(string fecha);
+        public Task<List<ComandaResponse>> GetAll(DateTime? fecha);
         //8
-        public Task<ComandaGetResponse?> GetComandaById(string id);
+        public Task<ComandaGetResponse?> GetComandaById(Guid id);
 
     }
 }

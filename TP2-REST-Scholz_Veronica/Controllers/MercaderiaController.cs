@@ -4,7 +4,7 @@ using Application.Interfaces;
 
 namespace TP2_REST_Scholz_Veronica.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class MercaderiaController : ControllerBase
     {
@@ -19,43 +19,61 @@ namespace TP2_REST_Scholz_Veronica.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<MercaderiaGetResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll([FromQuery] int? tipo, string? nombre, string orden = "ASC") //debug: tipo=0, string=null, orden="ASC"
+        public async Task<IActionResult> GetAll([FromQuery] int? tipo, string? nombre, string? orden)
         {
-            List<MercaderiaGetResponse>? result;
-            try
+            if(orden != null)
             {
-                if(tipo == null || tipo == 0)
-                {
-                    if(nombre != null)
-                    {
-                        result = await _serviceMercaderia.GetFilteredByName(nombre, orden);
-                    }
-                    else
-                    {
-                        result = await _serviceMercaderia.GetAll(orden);
-                    }
-                }
-                else 
-                {
-                    bool exist = await _serviceMercaderia.TipeExists(tipo);
-                    if (!exist)
-                    {
-                        throw new Exception();
-                    }
-                    if (nombre != null)
-                    {
-                        result = await _serviceMercaderia.GetFilteredByNameAndTipe(tipo, nombre, orden);
-                    }
-                    else
-                    {
-                        result = await _serviceMercaderia.GetFilteredByTipe(tipo, orden);
-                    } 
-                }
-                return new JsonResult(result) { StatusCode = 200 };
+                orden = orden.ToUpper();
             }
-            catch
+            //devuelve [] si no encuentra
+            List<MercaderiaGetResponse>? result = new();
+            string message = "";
+
+            //si mando algo debe ser "ASC" o "DESC" sino bad request
+            if (orden != null && orden != "ASC" && orden != "DESC")
             {
-                return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
+                message = "El parámetro 'orden' debe ser 'ASC' o 'DESC'.";
+                return new JsonResult(new BadRequest { message = message }) { StatusCode = 400 };
+            }
+            else //ASC DESC null
+            {
+                try
+                {
+                    if(tipo == null)
+                    {
+                        if(nombre != null)
+                        {
+                            result = await _serviceMercaderia.GetFilteredByName(nombre, orden);
+                        }
+                        else
+                        {
+                            result = await _serviceMercaderia.GetAll(orden);
+                        }
+                    }
+                    else 
+                    {
+                        bool exist = await _serviceMercaderia.TipeExists(tipo);
+                        if (!exist)
+                        {
+                            message = "El valor ingresado del parámetro 'tipo' no existe en la base de datos.";
+                            return new JsonResult(new BadRequest { message = message }) { StatusCode = 400 };
+                        }
+                        if (nombre != null)
+                        {
+                            result = await _serviceMercaderia.GetFilteredByNameAndTipe(tipo, nombre, orden);
+                        }
+                        else
+                        {
+                            result = await _serviceMercaderia.GetFilteredByTipe(tipo, orden);
+                        } 
+                    }
+                    return new JsonResult(result) { StatusCode = 200 };
+                }
+                catch
+                {
+                    message = "Ha ocurrido un error. ";
+                    return new JsonResult(new BadRequest { message = "Bad Request" }) { StatusCode = 400 };
+                }
             }
         }
 
@@ -76,14 +94,13 @@ namespace TP2_REST_Scholz_Veronica.Controllers
                 }
                 else
                 {
-                    return new JsonResult(new BadRequest { mensaje = "Conflict" }) { StatusCode = 409 }; 
+                    return new JsonResult(new BadRequest { message = "Ya existe una mercadería con ese nombre." }) { StatusCode = 409 }; 
                 }
             }
             catch (Exception) 
             {
-                return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 }; 
+                return new JsonResult(new BadRequest { message = "Ha ocurrido un error al crear la mercadería." }) { StatusCode = 400 }; 
             }
-
         }
         //7.edit Agregar búsqueda de mercadería por id
         [HttpGet("{id}")]
@@ -97,7 +114,7 @@ namespace TP2_REST_Scholz_Veronica.Controllers
                 var result = await _serviceMercaderia.GetMercaderiaById(id);
                 if(result == null)
                 {
-                    return new JsonResult(new BadRequest { mensaje = "Not Found" }) { StatusCode = 404 };
+                    return new JsonResult(new BadRequest { message = "No se encontro una mercaderia con ese id." }) { StatusCode = 404 };
                 }
                 else
                 {
@@ -106,7 +123,7 @@ namespace TP2_REST_Scholz_Veronica.Controllers
             }
             catch
             {
-                return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
+                return new JsonResult(new BadRequest { message = "El id ingrasado es invalido." }) { StatusCode = 400 };
             }
         }
 
@@ -122,7 +139,7 @@ namespace TP2_REST_Scholz_Veronica.Controllers
                 bool existsId = _serviceMercaderia.Exists(id).Result;
                 if (!existsId)
                 {
-                    return new JsonResult(new BadRequest { mensaje = "Not Found" }) { StatusCode = 404 };
+                    return new JsonResult(new BadRequest { message = "No se encontro una mercaderia con ese id." }) { StatusCode = 404 };
                 }
 
                 bool exists = _serviceMercaderia.Exists(body.nombre).Result;
@@ -133,19 +150,19 @@ namespace TP2_REST_Scholz_Veronica.Controllers
                 }
                 else
                 {
-                    return new JsonResult(new BadRequest { mensaje = "Conflict" }) { StatusCode = 409 };
+                    return new JsonResult(new BadRequest { message = "No se puede editar, ya existe una mercadería con ese nombre." }) { StatusCode = 409 };
                 }
             }
             catch 
             {
-                return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
+                return new JsonResult(new BadRequest { message = "Ha ocurrido un error al editar la mercadería." }) { StatusCode = 400 };
             }
         }
 
         //6. Debe permitir eliminar la mercadería.
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(MercaderiaResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BadRequest), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Delete(int id)
         {
@@ -154,7 +171,7 @@ namespace TP2_REST_Scholz_Veronica.Controllers
                 bool comandaExist = await _serviceMercaderia.ComandaMercaderiaExist(id);
                 if (comandaExist)
                 {
-                    return new JsonResult(new BadRequest { mensaje = "Conflict" }) { StatusCode = 409 };
+                    return new JsonResult(new BadRequest { message = "No se puede eliminar la mercadería, existe una encomienda que dependa de esta." }) { StatusCode = 409 };
                 }
                 else
                 {
@@ -165,13 +182,13 @@ namespace TP2_REST_Scholz_Veronica.Controllers
                         return new JsonResult(result) { StatusCode = 200 };
                     } else
                     {
-                        return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
+                        return new JsonResult(new BadRequest { message = "No se encontro una mercaderia con ese id." }) { StatusCode = 404 };
                     }
                 }
             }
             catch
             {
-                return new JsonResult(new BadRequest { mensaje = "Bad Request" }) { StatusCode = 400 };
+                return new JsonResult(new BadRequest { message = "Ha ocurrido un error al eliminar la mercadería." }) { StatusCode = 400 };
             }
         }
     }

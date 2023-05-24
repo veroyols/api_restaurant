@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Infrastructure.cqrs_Query
 {
@@ -14,14 +15,25 @@ namespace Infrastructure.cqrs_Query
             _appDbContext = context;
         }
         //3
-        public async Task<List<Guid>> GetAllComandaIds(DateTime fecha) 
+        public async Task<List<Guid>> GetAllComandaIds(DateTime? fecha) 
         {
-            var list = await _appDbContext.ComandaDb
-                .Where(el => el.Fecha == fecha)
-                .Select(el => el.ComandaId)
-                .ToListAsync();
+            List<Guid> list = new();
+
+            if (fecha != null)
+            {
+                list = await _appDbContext.ComandaDb
+                    .Where(el => el.Fecha == fecha)
+                    .Select(el => el.ComandaId)
+                    .ToListAsync();
+            } else
+            {
+                list = await _appDbContext.ComandaDb
+                    .Select(el => el.ComandaId)
+                    .ToListAsync();
+            }
             return list;
         }
+
         //8
         public async Task<Comanda?> GetComandaById(Guid comandaId)
         {

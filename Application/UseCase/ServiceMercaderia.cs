@@ -75,24 +75,25 @@ namespace Application.UseCase
             return response;
         }
         //4
-        public async Task<List<MercaderiaGetResponse>?> GetFilteredByNameAndTipe(int? tipo, string nombre, string orden)
+        public async Task<List<MercaderiaGetResponse>?> GetFilteredByNameAndTipe(int? tipo, string nombre, string? orden)
         {
             var mercaderias = await _query.GetFilteredByNameAndTipe(tipo, nombre, orden);
             return MapList(mercaderias);
         }
 
-        public async Task<List<MercaderiaGetResponse>?> GetFilteredByTipe(int? tipo, string orden)
+        public async Task<List<MercaderiaGetResponse>?> GetFilteredByTipe(int? tipo, string? orden)
         {
             var mercaderias = await _query.GetFilteredByTipe(tipo, orden);
             return MapList(mercaderias);
         }
 
-        public async Task<List<MercaderiaGetResponse>?> GetFilteredByName(string nombre, string orden)
+        public async Task<List<MercaderiaGetResponse>?> GetFilteredByName(string nombre, string? orden)
         {
-            var mercaderias = await _query.GetFilteredByName(nombre, orden);
+            List<Mercaderia>? mercaderias = new();
+            mercaderias = await _query.GetFilteredByName(nombre, orden);
             return MapList(mercaderias);
         }
-        public async Task<List<MercaderiaGetResponse>?> GetAll(string orden) //debug: tipo=0, string=null, orden="ASC"
+        public async Task<List<MercaderiaGetResponse>?> GetAll(string? orden) //debug: tipo=0, string=null, orden="ASC"
         {
             var mercaderias = await _query.GetAll(orden);
             return MapList(mercaderias);
@@ -167,6 +168,12 @@ namespace Application.UseCase
                 };
             }
             return null;
+        }
+
+        public async Task<bool> Exist(List<int> mercaderias)
+        {
+            return await _query.ExistIds(mercaderias);
+
         }
     }
 }
