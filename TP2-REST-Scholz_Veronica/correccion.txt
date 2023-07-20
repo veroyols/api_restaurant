@@ -35,4 +35,3 @@ Scholz:
     + la api get comanda/:id no respeta el response solicitado.
     + la api get comanda/:id devuelve 404 cuando se ingresa un valor invalido.
     + la api delete mercadería/:id devuelve 400 cuando se ingresa un id inexistente.
-
