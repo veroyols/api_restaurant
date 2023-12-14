@@ -22,7 +22,7 @@ namespace Infrastructure.Persistence
             {
                 entity.ToTable("TipoMercaderia");
                 entity.HasKey(tm => tm.TipoMercaderiaId);
-                entity.Property(tm => tm.Descripcion).HasColumnType("nvarchar(50)");
+                entity.Property(tm => tm.Descripcion).HasMaxLength(50).IsRequired();
                 entity.Property(tm => tm.TipoMercaderiaId).ValueGeneratedOnAdd();
                 entity.HasData(new TipoMercaderia { TipoMercaderiaId = 1, Descripcion = "Entrada" });
                 entity.HasData(new TipoMercaderia { TipoMercaderiaId = 2, Descripcion = "Minutas" });
@@ -44,7 +44,7 @@ namespace Infrastructure.Persistence
             {
                 entity.ToTable("FormaEntrega");
                 entity.HasKey(fe => fe.FormaEntregaId);
-                entity.Property(fe => fe.Descripcion).HasColumnType("nvarchar(50)");
+                entity.Property(fe => fe.Descripcion).HasMaxLength(50);
                 entity.Property(fe => fe.FormaEntregaId).ValueGeneratedOnAdd();
                 entity.HasData(new FormaEntrega { FormaEntregaId = 1, Descripcion = "Salon" });
                 entity.HasData(new FormaEntrega { FormaEntregaId = 2, Descripcion = "Delivery" });
@@ -59,10 +59,10 @@ namespace Infrastructure.Persistence
             {
             entity.ToTable("Mercaderia");
             entity.HasKey(m => m.MercaderiaId);
-            entity.Property(m => m.Nombre).HasColumnType("nvarchar(50)");
-            entity.Property(m => m.Ingredientes).HasColumnType("nvarchar(255)");
-            entity.Property(m => m.Preparacion).HasColumnType("nvarchar(255)");
-            entity.Property(m => m.Imagen).HasColumnType("nvarchar(255)");
+            entity.Property(m => m.Nombre).HasMaxLength(50);
+                entity.Property(m => m.Ingredientes).HasMaxLength(255);
+            entity.Property(m => m.Preparacion).HasMaxLength(255);
+            entity.Property(m => m.Imagen).HasMaxLength(255);
             entity.Property(m => m.MercaderiaId).ValueGeneratedOnAdd();
 
                 entity.HasData(new Mercaderia
@@ -398,7 +398,7 @@ namespace Infrastructure.Persistence
             {
                 entity.ToTable("Comanda");
                 entity.HasKey(c => c.ComandaId);
-                entity.Property(c => c.Fecha).HasColumnType("date");
+                entity.Property(c => c.Fecha).IsRequired();
 
                 //RELACION
                 entity

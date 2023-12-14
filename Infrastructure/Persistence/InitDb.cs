@@ -9,10 +9,8 @@ namespace Infrastructure.Persistence
     {
         public static async Task PrepPopulation(IApplicationBuilder app)
         {
-            using (var serverScope = app.ApplicationServices.CreateScope())
-            {
-                await SeedData(serverScope.ServiceProvider.GetService<AppDbContext>());
-            }
+            using var serverScope = app.ApplicationServices.CreateScope();
+            await SeedData(serverScope.ServiceProvider.GetService<AppDbContext>());
 
         }
 

@@ -7,7 +7,7 @@ namespace TP2_REST_Scholz_Veronica.Helpers {
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-
+            databaseUrl = "postgres://db_restaurant_uvry_user:cPx0CE9uj18eD0jAyOCMYtIYkXY3CQMX@dpg-cltjkd5a73kc73bhcb3g-a.oregon-postgres.render.com:5432/db_restaurant_uvry";
 
             return string.IsNullOrEmpty(databaseUrl) ? connectionString : BuildConnectionString(databaseUrl);
         }
