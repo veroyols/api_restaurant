@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TP2-REST-Scholz_Veronica", "TP2-REST-Scholz_Veronica.csproj", "{02B2D579-BE3F-4AA2-A736-1AF6D1CF9703}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TP2-REST-Scholz_Veronica", "TP2-REST-Scholz_Veronica\TP2-REST-Scholz_Veronica.csproj", "{02B2D579-BE3F-4AA2-A736-1AF6D1CF9703}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "..\Infrastructure\Infrastructure.csproj", "{014AED4A-8B1E-43FA-84A4-700D28CA4AD5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{014AED4A-8B1E-43FA-84A4-700D28CA4AD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "..\Application\Application.csproj", "{5EBB0E8D-8DA1-4198-9B50-6337E7140BD0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{5EBB0E8D-8DA1-4198-9B50-6337E7140BD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "..\Domain\Domain.csproj", "{77B5B271-12E2-4F90-99F4-F3ECEF9EB6BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{77B5B271-12E2-4F90-99F4-F3ECEF9EB6BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

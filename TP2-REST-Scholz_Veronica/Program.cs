@@ -4,6 +4,7 @@ using Infrastructure.cqrs_Command;
 using Infrastructure.cqrs_Query;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using TP2_REST_Scholz_Veronica.Helpers;
 
 //CORS
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -11,12 +12,11 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 //CORS
-builder.Services.AddCors(options =>
-{
+builder.Services.AddCors(options => {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://localhost:3001", "http://172.17.208.1:3001", "http://127.0.0.1:5500")
+                      policy => {
+                          policy
+                          .AllowAnyOrigin()
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                       });
@@ -25,6 +25,7 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -40,8 +41,9 @@ builder.Services.AddScoped<IServiceComanda, ServiceComanda>();
 builder.Services.AddScoped<IServiceMercaderia, ServiceMercaderia>();
 
 //CONECTION STRING
-var connectionString = builder.Configuration["ConnectionString"];
-builder.Services.AddDbContext<AppDbContext>(op => op.UseSqlServer(connectionString));
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+connectionString = ConnectionHelpers.GetConnectionString(builder.Configuration);
+builder.Services.AddDbContext<AppDbContext>(op => op.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
@@ -56,4 +58,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+await InitDb.PrepPopulation(app);
+
 app.Run();
