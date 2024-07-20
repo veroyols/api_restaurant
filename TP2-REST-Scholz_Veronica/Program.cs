@@ -4,6 +4,7 @@ using Infrastructure.cqrs_Command;
 using Infrastructure.cqrs_Query;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using TP2_REST_Scholz_Veronica.Helpers;
 
 //CORS
@@ -42,7 +43,8 @@ builder.Services.AddScoped<IServiceMercaderia, ServiceMercaderia>();
 
 //CONECTION STRING
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-connectionString = ConnectionHelpers.GetConnectionString(builder.Configuration);
+
+//connectionString = ConnectionHelpers.GetConnectionString(builder.Configuration);
 builder.Services.AddDbContext<AppDbContext>(op => op.UseNpgsql(connectionString));
 
 var app = builder.Build();

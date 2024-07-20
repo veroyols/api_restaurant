@@ -5,10 +5,11 @@ namespace TP2_REST_Scholz_Veronica.Helpers {
     public class ConnectionHelpers {
         public static string GetConnectionString(IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var connectionString = configuration.GetConnectionString("PostgresConnection");
             var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-            return string.IsNullOrEmpty(databaseUrl) ? connectionString : BuildConnectionString(databaseUrl);
+            //return string.IsNullOrEmpty(databaseUrl) ? connectionString : BuildConnectionString(databaseUrl);
+            return connectionString;
         }
 
         //build the connection string from the environment. i.e. Heroku

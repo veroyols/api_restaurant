@@ -4,16 +4,13 @@ using static System.Net.WebRequestMethods;
 
 namespace Infrastructure.Persistence
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
         public DbSet<TipoMercaderia> TipoMercaderiaDb { get; set; }
         public DbSet<FormaEntrega> FormaEntregaDb { get; set; }
         public DbSet<Comanda> ComandaDb { get; set; }
         public DbSet<Mercaderia> MercaderiaDb { get; set; }
         public DbSet<ComandaMercaderia> ComandaMercaderiaDb { get; set; }
-
-        //CONSTRUCTOR
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         //MODELADO -> FluentApi
         protected override void OnModelCreating(ModelBuilder modelBuilder)
