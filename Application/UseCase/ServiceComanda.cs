@@ -1,7 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Schemas;
 using Domain.Entities;
-using Microsoft.VisualBasic;
 
 namespace Application.UseCase
 {
