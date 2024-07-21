@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{588C18C8-5151-454E-B5D3-72611728142A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7CBBDC89-C277-46EE-A3D9-7000F455BA10}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{52BF000B-5F63-4153-9C13-CA71F5B76A97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +46,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{02B2D579-BE3F-4AA2-A736-1AF6D1CF9703} = {7CBBDC89-C277-46EE-A3D9-7000F455BA10}
+		{014AED4A-8B1E-43FA-84A4-700D28CA4AD5} = {7CBBDC89-C277-46EE-A3D9-7000F455BA10}
+		{5EBB0E8D-8DA1-4198-9B50-6337E7140BD0} = {7CBBDC89-C277-46EE-A3D9-7000F455BA10}
+		{77B5B271-12E2-4F90-99F4-F3ECEF9EB6BE} = {7CBBDC89-C277-46EE-A3D9-7000F455BA10}
+		{588C18C8-5151-454E-B5D3-72611728142A} = {52BF000B-5F63-4153-9C13-CA71F5B76A97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2AF47F54-D348-47D4-9CEC-671E0358D2F5}
