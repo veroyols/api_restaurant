@@ -25,23 +25,44 @@ Esta API permite administrar la mercadería (platos, bebidas y postres) y gestio
 
 ## 🔗 Endpoints
 ### 🍽️ Mercaderia
+
+📋 *Listar mercadería con filtros y ordenamiento*
+`GET /api/v1/Mercaderia?tipo={tipo}&nombre={nombre}&orden={orden}`
+
 ```
-  /api/v1/Mercaderia: 
     get (query tipo, nombre, orden ASC):
       responses:
         '200' Success: [MercaderiaGetResponse]
         '400' Bad Request: BadRequest
+```
+
+➕ *Registrar una nueva mercadería*
+`POST /api/v1/Mercaderia`
+
+```
     options (body MercaderiaRequest):
       responses:
         '201' Success: MercaderiaResponse
         '400' Bad Request: BadRequest
         '409' Conflict: BadRequest
+```
+
+🔍 *Buscar mercadería por ID*
+`GET /api/v1/Mercaderia/{id}`
+
+```
   /api/v1/Mercaderia/{id}:
     get (id):
       responses:
         '200' Success: MercaderiaResponse
         '400' Bad Request: BadRequest
         '404' Not Found: BadRequest
+```
+
+✏️ *Modificar una mercadería*
+`PUT /api/v1/Mercaderia/{id}`
+
+```
     options (id)
       requestBody: MercaderiaRequest
       responses:
@@ -49,6 +70,12 @@ Esta API permite administrar la mercadería (platos, bebidas y postres) y gestio
         '400' Bad Request: BadRequest
         '404' Not Found: BadRequest
         '409' Conflict: BadRequest
+```
+
+🗑️ *Eliminar una mercadería*
+`DELETE /api/v1/Mercaderia/{id}`
+
+```
     delete (id):
       responses:
         '200' Success: MercaderiaResponse
@@ -57,18 +84,32 @@ Esta API permite administrar la mercadería (platos, bebidas y postres) y gestio
 ```
 
 ### 📝 Comandas
+
+📋 *Listar comandas por fecha*
+`GET /api/v1/Comanda?fecha={fecha}`
+
 ```
-/api/v1/Comanda:
-    get (query fecha):
+  get (query fecha):
       responses:
-        '200' Success: [ComandaResponse]
-        '400' Bad Request: BadRequest
-    post (body ComandaRequest)
+          '200' Success: [ComandaResponse]
+          '400' Bad Request: BadRequest
+```
+
+➕ *Registrar nueva comanda*
+`POST /api/v1/Comanda`
+
+```
+  post (body ComandaRequest)
       responses:
         '201' Success: ComandaResponse
         '400' Bad Request: BadRequest
+```
+🔍 *Buscar comanda por ID*
+`OPTIONS /api/v1/Comanda/{id}`
+
+```
   /api/v1/Comanda/{id}:
-    options (id):
+    OPTIONS (id):
       responses:
         '200' Success: ComandaGetResponse
         '400' Bad Request: BadRequest
