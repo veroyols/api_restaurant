@@ -1,38 +1,76 @@
-# TP2-REST-Scholz_Veronica | Parte 2
+# 🍽️ API REST - Restaurant | Parte 2
 
-Los criterios de aceptación son:
-1. Debe permitir registrar la mercadería (platos, bebida o postre).
-2. Debe permitir registrar las comandas (el pedido del cliente)
-3. Debe enlistar las comandas con el detalle de los platos según la fecha que se le ingrese.
-4. Debe enlistar la información de la mercadería y permitir filtrar por nombre y/o tipo y ordenar por precio.
-5. Debe permitir modificar la información de la mercadería.
-6. Debe permitir eliminar la mercadería.
-7. Agregar búsqueda de mercadería por nombre y/o tipo y ordenar por precio.
-8. Agregar búsqueda de comanda por id.
+Una API RESTful para la gestión de mercadería y comandas en un restaurante.
 
-Consigna:
-Realizar una aplicación con la arquitectura API Rest, que exponga los servicios necesarios para cumplir con los criterios de aceptación.
-Se deberá reescribir la aplicación de consola realizada en el TP 1 y adaptarla a los nuevos requerimientos.
+## 📜 Descripción
 
-● La aplicación se debe ajustar al estándar de REST. Tanto los métodos de petición como los de respuesta.
+Esta API permite administrar la mercadería (platos, bebidas y postres) y gestionar las comandas de los clientes. Implementa operaciones de **alta**, **baja**, **modificación**, **búsqueda** y **listado** cumpliendo con el estándar **REST** y respetando la definición de **OpenAPI**.
 
-● Los endpoints deben respetar la definición de OpenApi. Pueden ver la definición utilizando la herramienta de Swagger UI
+## 🚀 Funcionalidades
 
-Aclaración:
+1. ✅ **Registrar mercadería** (platos, bebidas o postres).
+2. ✅ **Registrar comandas** (pedidos de los clientes).
+3. ✅ **Listar comandas** con detalle de platos por fecha ingresada.
+4. ✅ **Listar mercadería** con filtros por nombre y/o tipo, y ordenación por precio (ASC/DESC).
+5. ✅ **Modificar la información de la mercadería**.
+6. ✅ **Eliminar mercadería** (solo si no está asociada a una comanda).
+7. ✅ **Buscar mercadería por ID**.
+8. ✅ **Buscar comanda por ID**.
 
-● Las url, parámetros, body, status y response definidos en la definición de OpenApi deben respetarse.
+## 🛠️ Tecnologías Utilizadas
 
-● Los endpoints con método HTTP [Options] definido en el archivo, deben ser reemplazado por el estudiante según el estándar REST.
+- 🌐 **.NET Core / ASP.NET Core**: Framework principal para el desarrollo de la API.
+- 📦 **Swagger UI**: Documentación y prueba de endpoints.
+- 🗄️ **PostgreSQL / SQL Server**: Base de datos para almacenar mercadería y comandas.
 
-● La mercadería no puede ser eliminada si existe una encomienda que dependa de esta.
+## 🔗 Endpoints
+### 🍽️ Mercaderia
+```
+  /api/v1/Mercaderia: 
+    get (query tipo, nombre, orden ASC):
+      responses:
+        '200' Success: [MercaderiaGetResponse]
+        '400' Bad Request: BadRequest
+    options (body MercaderiaRequest):
+      responses:
+        '201' Success: MercaderiaResponse
+        '400' Bad Request: BadRequest
+        '409' Conflict: BadRequest
+  /api/v1/Mercaderia/{id}:
+    get (id):
+      responses:
+        '200' Success: MercaderiaResponse
+        '400' Bad Request: BadRequest
+        '404' Not Found: BadRequest
+    options (id)
+      requestBody: MercaderiaRequest
+      responses:
+        '200' Success: MercaderiaResponse
+        '400' Bad Request: BadRequest
+        '404' Not Found: BadRequest
+        '409' Conflict: BadRequest
+    delete (id):
+      responses:
+        '200' Success: MercaderiaResponse
+        '400' Bad Request: BadRequest
+        '409' Conflict: BadRequest
+```
 
-● No puede existir mercadería con el mismo nombre
-
-● Los filtros son siempre opcionales
-
-● El filtro de orden sólo puede admitir los valores “ASC” y “DESC”
-
-Entrega:
-Esta práctica debe ser entregada antes del cierre del sprint actual.
-El código debe ser subido al campus virtual o enviado por mail al docente en formato ZIP o RAR con el nombre: “TP2-REST-Apellido_Nombre”
-
+### 📝 Comandas
+```
+/api/v1/Comanda:
+    get (query fecha):
+      responses:
+        '200' Success: [ComandaResponse]
+        '400' Bad Request: BadRequest
+    post (body ComandaRequest)
+      responses:
+        '201' Success: ComandaResponse
+        '400' Bad Request: BadRequest
+  /api/v1/Comanda/{id}:
+    options (id):
+      responses:
+        '200' Success: ComandaGetResponse
+        '400' Bad Request: BadRequest
+        '404' Not Found: BadRequest
+```
